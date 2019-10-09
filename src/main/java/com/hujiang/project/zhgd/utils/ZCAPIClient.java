@@ -47,6 +47,28 @@ public class ZCAPIClient {
         return s;
     }
 
+    /** 上报惠州住建局两制 */
+    public static String xieTwoSystems(String url,JSONObject jsonObject) throws IOException, URISyntaxException {
+        //获取时间
+        String simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+//        StringBuilder str4MD5 = new StringBuilder();
+//        str4MD5.append("api_key").append(jsonObject.getString("api_key"))
+//                .append("api_version").append(jsonObject.getString("api_version"))
+//                .append("timestamp").append(simpleDateFormat)
+//                .append("body").append(jsonObject.getString("body"));
+
+        String save = jsonObject.getString("api_key")+"api_key"+jsonObject.getString("api_key")+"api_version"+jsonObject.getString("api_version")
+                +"body"+jsonObject.getString("body")+"timestamp"+simpleDateFormat+jsonObject.getString("api_key");
+
+        //转MD5 32位大写
+        String serverSignature = Tools.encodeToMD5(save);
+        //设置签名
+        jsonObject.put("signature",serverSignature);
+        jsonObject.put("timestamp",simpleDateFormat);
+        String s = Util.httpPostWithJSON(Constants.XIETWOSYSTEMS+url, jsonObject);
+        return s;
+    }
 
     /**
      * 中车上报设备数据
